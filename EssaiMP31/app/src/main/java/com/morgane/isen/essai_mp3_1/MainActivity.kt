@@ -3,6 +3,7 @@ package com.morgane.isen.essai_mp3_1
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.ContextCompat.startActivity
 import android.text.TextUtils
 import android.util.Log
@@ -31,6 +33,9 @@ import java.util.ArrayList
 
 class MainActivity : AppCompatActivity(){
 
+
+    private val STORAGE_PERMISSION_CODE = 23
+
     override fun onCreate(savedInstanceState: Bundle?) {
         println("hello")
         val fragment = AudioFragment()
@@ -40,6 +45,14 @@ class MainActivity : AppCompatActivity(){
         findViewById<Button>(R.id.button).setOnClickListener{
             val homeIntent = getHomeActivityIntent()
             startActivity(homeIntent)
+        }
+
+        if (ContextCompat.checkSelfPermission(MP3Application.getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE)
+        }
+        if (ContextCompat.checkSelfPermission(MP3Application.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE)
         }
 
         /*fragment.arguments = savedInstanceState

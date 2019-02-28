@@ -83,5 +83,6 @@ class AudioFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        mediaPlayer?.stop();
     }
 }

@@ -28,6 +28,7 @@ class MP3Activity : AppCompatActivity(), AudioFileListener {
         bundle.putString(Constants.Audio.EXTRA_NAME, audioFile?.name)
         bundle.putString(Constants.Audio.EXTRA_ARTIST, audioFile?.artist)
         bundle.putString(Constants.Audio.EXTRA_ALBUM, audioFile?.album)
+        bundle.putString(Constants.Audio.EXTRA_PATH, audioFile?.path)
         fragment.arguments = bundle
 
         Log.d("fragmentonview", fragment.arguments.toString())

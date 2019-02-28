@@ -28,7 +28,7 @@ public class RetrieveAudioFiles extends AsyncTask<String, Void, List<AudioFile>>
         Context context = MP3Application.getContext();
         Log.e("hello",context.toString());
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String[] projection = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM};
+        String[] projection = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.AudioColumns.DATA};
         Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
 
         if (cursor != null) {
@@ -37,9 +37,10 @@ public class RetrieveAudioFiles extends AsyncTask<String, Void, List<AudioFile>>
                 audioFile.setName( cursor.getString(0));
                 audioFile.setArtist( cursor.getString(1));
                 audioFile.setAlbum( cursor.getString(2));
+                audioFile.setPath(cursor.getString(3));
 
                 Log.e("Name :" + audioFile.getName(), " Artist :" + audioFile.getArtist());
-                Log.e(" Album :" + audioFile.getAlbum(), "hello");
+                Log.e(" Album :" + audioFile.getAlbum(), "Path: " +audioFile.getPath());
 
                 allAudioFiles.add(audioFile);
             }

@@ -5,6 +5,7 @@ class AudioFile {
     var name: String = ""
     var artist: String = ""
     var album: String = ""
+    var path: String = ""
 
 
 }

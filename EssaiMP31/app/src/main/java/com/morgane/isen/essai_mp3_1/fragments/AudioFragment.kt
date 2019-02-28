@@ -2,6 +2,7 @@ package com.morgane.isen.essai_mp3_1.fragments
 
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.provider.MediaStore
 import android.provider.SyncStateContract
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -20,10 +21,11 @@ import kotlinx.android.synthetic.main.fragment_audio.*
 
 class AudioFragment : Fragment() {
 
-    private var mediaPlayer : MediaPlayer? = null
+    private var mediaPlayer : MediaPlayer = MP3Application().mediaPlayer
 
     companion object {
         lateinit var instance : AudioFragment
+
             private set
     }
 
@@ -42,16 +44,19 @@ class AudioFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val mediaPlayer : MediaPlayer = MediaPlayer()
+
         val PATH_TO_FILE = arguments!!.getString(Constants.Audio.EXTRA_PATH)
-        mediaPlayer?.setDataSource(PATH_TO_FILE)
-        mediaPlayer?.prepare()
+        mediaPlayer.setDataSource(PATH_TO_FILE)
+        mediaPlayer.prepare()
 
         playbis.setOnTouchListener {  _, motionEvent ->
             when (motionEvent?.action) {
                 MotionEvent.ACTION_UP -> {
                     println("bouton appuyé")
-                    mediaPlayer?.start()
+                    if(mediaPlayer.isPlaying()){
+                        mediaPlayer.stop()
+                    }
+                    mediaPlayer.start()
                 }
             }
             true
@@ -61,7 +66,7 @@ class AudioFragment : Fragment() {
             when (motionEvent?.action) {
                 MotionEvent.ACTION_UP -> {
                     println("bouton appuyé")
-                    mediaPlayer?.pause()
+                    mediaPlayer.pause()
                     //mediaPlayer?.seekTo(0)
                 }
             }
@@ -72,8 +77,8 @@ class AudioFragment : Fragment() {
             when (motionEvent?.action) {
                 MotionEvent.ACTION_UP -> {
                     println("bouton appuyé")
-                    mediaPlayer?.pause()
-                    mediaPlayer?.seekTo(0)
+                    mediaPlayer.pause()
+                    mediaPlayer.seekTo(0)
                 }
             }
             true
@@ -83,6 +88,6 @@ class AudioFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mediaPlayer?.stop();
+        mediaPlayer?.stop()
     }
 }

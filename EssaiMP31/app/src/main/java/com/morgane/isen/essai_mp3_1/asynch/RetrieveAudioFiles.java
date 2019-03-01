@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.morgane.isen.essai_mp3_1.GlobalMediaPlayer;
 import com.morgane.isen.essai_mp3_1.MP3Activity;
 import com.morgane.isen.essai_mp3_1.MP3Application;
 import com.morgane.isen.essai_mp3_1.MainActivity;
@@ -24,7 +25,7 @@ import java.util.List;
 
 import static android.support.v4.app.ActivityCompat.requestPermissions;
 
-public class RetrieveAudioFiles extends AsyncTask<String, Void, List<AudioFile>> {
+public class RetrieveAudioFiles extends AsyncTask<String, Void, List<AudioFile>> implements GlobalMediaPlayer {
 
     private AudioChangeListener mlistener;
 
@@ -34,13 +35,14 @@ public class RetrieveAudioFiles extends AsyncTask<String, Void, List<AudioFile>>
 
     @Override
     protected List<AudioFile> doInBackground(String... strings) {
-        List<AudioFile> allAudioFiles = new ArrayList<>();
+        //List<AudioFile> allAudioFiles = new ArrayList<>();
 
         Context context = MP3Application.getContext();
-        Log.e("hello", context.toString());
+        //Log.e("hello", context.toString());
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.AudioColumns.DATA};
         Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+        int i =0;
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -49,16 +51,18 @@ public class RetrieveAudioFiles extends AsyncTask<String, Void, List<AudioFile>>
                 audioFile.setArtist(cursor.getString(1));
                 audioFile.setAlbum(cursor.getString(2));
                 audioFile.setPath(cursor.getString(3));
+                audioFile.setI(i);
 
                 Log.e("Name :" + audioFile.getName(), " Artist :" + audioFile.getArtist());
                 Log.e(" Album :" + audioFile.getAlbum(), "Path: " + audioFile.getPath());
 
-                allAudioFiles.add(audioFile);
+                audioFiles.add(audioFile);
+                i++;
             }
             cursor.close();
         }
 
-        return allAudioFiles;
+        return audioFiles;
     }
 
     @Override

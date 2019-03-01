@@ -14,9 +14,11 @@ import android.widget.TextView
 
 import com.morgane.isen.essai_mp3_1.Constants
 import com.morgane.isen.essai_mp3_1.GlobalMediaPlayer
+import com.morgane.isen.essai_mp3_1.GlobalMediaPlayer.audioFiles
 import com.morgane.isen.essai_mp3_1.GlobalMediaPlayer.mediaPlayer
 import com.morgane.isen.essai_mp3_1.MP3Application
 import com.morgane.isen.essai_mp3_1.R
+import com.morgane.isen.essai_mp3_1.pojo.AudioFile
 import kotlinx.android.synthetic.main.fragment_audio.*
 
 
@@ -88,6 +90,15 @@ class AudioFragment : Fragment(), GlobalMediaPlayer{
                     println("bouton appuyé")
                     mediaPlayer.stop()
                     mediaPlayer.reset()
+                    val audio = getTrackById(PATH_TO_FILE)
+                    Log.d("audiotest",audio.toString())
+                    if (audio!=null){
+                        //Log.d("audiio", audio.i.toString())
+                        mediaPlayer.setDataSource(audioFiles[audio.i+1].path)
+                        mediaPlayer.prepare()
+                        //Log.d("audioFilepat",audioFiles[audio.i+1].path )
+                        mediaPlayer.start()
+                    }
                     newSong = false
                     //mediaPlayer.seekTo(0)
                 }
@@ -104,4 +115,16 @@ class AudioFragment : Fragment(), GlobalMediaPlayer{
 
         //mediaPlayer?.stop()
     }
+
+    fun getTrackById(path: String): AudioFile?{
+
+        for(i in 0..audioFiles.size ){
+            if(audioFiles[i].path==path){
+                return audioFiles[i]
+            }
+        }
+
+        return null
+    }
+
 }

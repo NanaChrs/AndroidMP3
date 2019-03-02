@@ -18,9 +18,6 @@ import com.morgane.isen.essai_mp3_1.pojo.AudioFile
 
 class MP3Activity : AppCompatActivity(), AudioFileListener {
 
-    inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) {
-        beginTransaction().func().commit()
-    }
 
     override fun onViewAudio(audioFile: AudioFile?) {
         val fragment = AudioFragment()
@@ -49,7 +46,7 @@ class MP3Activity : AppCompatActivity(), AudioFileListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val fragment = AudiosFragment();
+        val fragment = AudiosFragment()
         setContentView(R.layout.mp3activity)
 
         // Retrieve the login passed as parameter
@@ -57,8 +54,26 @@ class MP3Activity : AppCompatActivity(), AudioFileListener {
         if (null != intent) {
             val extras = intent.extras
         }
-        getSupportFragmentManager().inTransaction {
-            add(R.id.container2, fragment)
-        }
+
+        val tx = supportFragmentManager.beginTransaction()
+        //tx.add(R.id.container2, fragment)
+        tx.add(R.id.container2, fragment,"TAG")
+        tx.show(fragment)
+        tx.addToBackStack("TAG")
+        tx.commit()
+
+
+    }
+
+    override fun onBackPressed() {
+        val fragment = AudiosFragment()
+        super.onBackPressed()
+        val tx = supportFragmentManager.beginTransaction()
+        //tx.add(R.id.container2, fragment)
+        tx.replace(R.id.container2, fragment,"TAG")
+        tx.addToBackStack("TAG")
+        tx.commit()
+
+
     }
 }

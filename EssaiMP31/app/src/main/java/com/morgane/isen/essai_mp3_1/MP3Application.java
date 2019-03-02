@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import java.util.Collections;
+
 public class MP3Application extends Application {
     private static Context sContext;
 

@@ -5,21 +5,22 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.SyncStateContract
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.morgane.isen.essai_mp3_1.*
 
-import com.morgane.isen.essai_mp3_1.Constants
-import com.morgane.isen.essai_mp3_1.GlobalMediaPlayer
 import com.morgane.isen.essai_mp3_1.GlobalMediaPlayer.audioFiles
 import com.morgane.isen.essai_mp3_1.GlobalMediaPlayer.mediaPlayer
-import com.morgane.isen.essai_mp3_1.MP3Application
-import com.morgane.isen.essai_mp3_1.R
 import com.morgane.isen.essai_mp3_1.pojo.AudioFile
 import kotlinx.android.synthetic.main.fragment_audio.*
+import kotlinx.android.synthetic.main.fragment_audios.*
+import java.util.*
+
 
 
 
@@ -98,9 +99,12 @@ class AudioFragment : Fragment(), GlobalMediaPlayer{
                         mediaPlayer.prepare()
                         //Log.d("audioFilepat",audioFiles[audio.i+1].path )
                         mediaPlayer.start()
+                        refresh(audioFiles[(audio.i)+1])
                     }
                     newSong = false
                     //mediaPlayer.seekTo(0)
+
+
                 }
             }
             true
@@ -125,6 +129,29 @@ class AudioFragment : Fragment(), GlobalMediaPlayer{
         }
 
         return null
+    }
+
+    fun refresh(audioFile: AudioFile?) {
+        val fragment = AudioFragment()
+        val bundle = Bundle()
+        bundle.putString(Constants.Audio.EXTRA_NAME, audioFile?.name)
+        bundle.putString(Constants.Audio.EXTRA_ARTIST, audioFile?.artist)
+        bundle.putString(Constants.Audio.EXTRA_ALBUM, audioFile?.album)
+        bundle.putString(Constants.Audio.EXTRA_PATH, audioFile?.path)
+        fragment.arguments = bundle
+
+        Log.d("fragmentonview", fragment.arguments.toString())
+
+        val fm = fragmentManager
+        val tx = fm!!.beginTransaction()
+        tx.replace(R.id.container2, fragment)
+        //tx.addToBackStack(null)
+        tx.commit()
+
+        //getSupportFragmentManager().inTransaction {
+        //    add(R.id.container2, fragment)
+        //}
+
     }
 
 }

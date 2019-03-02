@@ -19,6 +19,7 @@ import com.morgane.isen.essai_mp3_1.interfaces.AudioFileListener;
 import com.morgane.isen.essai_mp3_1.pojo.AudioFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AudiosFragment extends Fragment implements AudioChangeListener,AdapterView.OnItemClickListener {

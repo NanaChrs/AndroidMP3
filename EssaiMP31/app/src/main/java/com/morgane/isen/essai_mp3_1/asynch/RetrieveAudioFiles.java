@@ -21,6 +21,7 @@ import com.morgane.isen.essai_mp3_1.interfaces.AudioChangeListener;
 import com.morgane.isen.essai_mp3_1.pojo.AudioFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static android.support.v4.app.ActivityCompat.requestPermissions;
@@ -35,7 +36,7 @@ public class RetrieveAudioFiles extends AsyncTask<String, Void, List<AudioFile>>
 
     @Override
     protected List<AudioFile> doInBackground(String... strings) {
-        //List<AudioFile> allAudioFiles = new ArrayList<>();
+        List<AudioFile> allAudioFiles = new ArrayList<>();
 
         Context context = MP3Application.getContext();
         //Log.e("hello", context.toString());
@@ -56,13 +57,17 @@ public class RetrieveAudioFiles extends AsyncTask<String, Void, List<AudioFile>>
                 Log.e("Name :" + audioFile.getName(), " Artist :" + audioFile.getArtist());
                 Log.e(" Album :" + audioFile.getAlbum(), "Path: " + audioFile.getPath());
 
-                audioFiles.add(audioFile);
+                allAudioFiles.add(audioFile);
                 i++;
             }
+            Collections.sort(allAudioFiles);
             cursor.close();
+            for(int j=0;j<allAudioFiles.size();j++) {
+                audioFiles.add(allAudioFiles.get(j));
+                audioFiles.get(j).setI(j);
+            }
         }
-
-        return audioFiles;
+        return allAudioFiles;
     }
 
     @Override

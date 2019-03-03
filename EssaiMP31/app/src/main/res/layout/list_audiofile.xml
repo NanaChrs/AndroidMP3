@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="41dp"
-        android:background="@color/colorPrimary"
-        android:orientation="vertical">
+        android:background="@color/black"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:text="Title" />
 
         <LinearLayout
@@ -24,15 +28,17 @@
                 android:id="@+id/artist"
                 android:layout_width="198dp"
                 android:layout_height="wrap_content"
+                android:textColor="@color/gray"
                 android:text="Artist" />
 
             <TextView
                 android:id="@+id/album"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/gray"
                 android:text="Album" />
 
         </LinearLayout>
 
     </LinearLayout>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

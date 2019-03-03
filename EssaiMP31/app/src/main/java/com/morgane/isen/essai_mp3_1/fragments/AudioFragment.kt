@@ -22,7 +22,7 @@ import com.morgane.isen.essai_mp3_1.thread.ThreadSeekBar
 import java.lang.Math.random
 import kotlin.random.Random
 import android.content.Intent
-
+import android.widget.ImageButton
 
 
 class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListener{
@@ -62,9 +62,20 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
         val album = arguments!!.getString(Constants.Audio.EXTRA_ALBUM)
         (view.findViewById<View>(R.id.albumbis) as TextView).text = album
         aleatoire = arguments!!.getString(Constants.Audio.EXTRA_ALEATOIRE)
-        (view.findViewById<View>(R.id.aleatoireButton) as Button).setText(aleatoire)
+        if(aleatoire=="Aleatoire") {
+            (view.findViewById<View>(R.id.aleatoireButton) as ImageButton).setImageResource(R.drawable.ic_shuffle_red_24dp)
+        } else {
+            (view.findViewById<View>(R.id.aleatoireButton) as ImageButton).setImageResource(R.drawable.ic_shuffle_black_24dp)
+
+        }
         buttonPlay= arguments!!.getString(Constants.Audio.EXTRA_PLAY)
-        (view.findViewById<View>(R.id.playbis) as Button).setText(buttonPlay)
+        if(buttonPlay=="Play") {
+            (view.findViewById<View>(R.id.playbis) as ImageButton).setImageResource(R.drawable.ic_play_arrow_black_24dp)
+        } else {
+            (view.findViewById<View>(R.id.playbis) as ImageButton).setImageResource(R.drawable.ic_pause_black_24dp)
+
+        }
+        (view.findViewById<View>(R.id.nextButton) as ImageButton).setImageResource(R.drawable.ic_next_black_24dp)
         seekBarAudio= view.findViewById(R.id.seekBar) as SeekBar
         progressMusic()
         mediaPlayer.reset()
@@ -85,9 +96,9 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
             thread = ThreadSeekBar(seekBarAudio,isPaused)
         }
 
-        playbis.setText(buttonPlay)
-        aleatoireButton.setText(aleatoire)
-
+        //playbis.setText(buttonPlay)
+        //aleatoireButton.setText(aleatoire)
+        changeButton()
         val PATH_TO_FILE = arguments!!.getString(Constants.Audio.EXTRA_PATH)
 
 
@@ -96,7 +107,7 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
                 MotionEvent.ACTION_UP -> {
                     if (buttonPlay=="Play") {
                         buttonPlay="Pause"
-                        playbis.setText(buttonPlay)
+                        changeButton()
                         if (!isPaused || newSong) {
                             mediaPlayer.stop()
                             mediaPlayer.reset()
@@ -111,7 +122,7 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
                         mediaPlayer.start()
                     } else {
                         buttonPlay="Play"
-                        playbis.setText(buttonPlay)
+                        changeButton()
                         println("bouton appuyé")
                         mediaPlayer.pause()
                         isPaused = true
@@ -135,7 +146,7 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
                         aleatoire="Non Aleatoire"
                     }
                     Log.e("Alea apres",aleatoire)
-                    aleatoireButton.setText(aleatoire)
+                    changeButton()
                     passPlayAndAlea()
                 }
             }
@@ -147,7 +158,6 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
                 MotionEvent.ACTION_UP -> {
                     var index=0
                     buttonPlay="Pause"
-                    playbis.setText("Pause")
                     passPlayAndAlea()
                     println("bouton appuyé")
                     mediaPlayer.stop()
@@ -239,5 +249,18 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
         val intent = activity!!.intent
         intent.putExtras(datas)
 
+    }
+
+    fun changeButton(){
+        if (buttonPlay=="Play") {
+            playbis.setImageResource(R.drawable.ic_play_arrow_black_24dp)
+        } else {
+            playbis.setImageResource(R.drawable.ic_pause_black_24dp)
+        }
+        if (aleatoire=="Non Aleatoire") {
+            aleatoireButton.setImageResource(R.drawable.ic_shuffle_black_24dp)
+        } else {
+            aleatoireButton.setImageResource(R.drawable.ic_shuffle_red_24dp)
+        }
     }
 }

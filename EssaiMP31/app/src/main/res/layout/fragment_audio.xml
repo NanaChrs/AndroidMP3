@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/background"
+    android:textColor="@color/white"
     android:layout_height="match_parent"
     tools:context=".fragments.AudioFragment"
     android:id="@+id/container3">
@@ -16,11 +19,15 @@
         android:layout_marginEnd="0dp"
         android:layout_marginRight="0dp"
         android:layout_marginBottom="0dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="MissingConstraints">
 
 
         <ProgressBar
             android:id="@+id/progressBar2"
+            android:outlineAmbientShadowColor="@color/colorPrimary"
+            android:background="@color/white"
+            android:outlineSpotShadowColor="@color/colorPrimaryDark"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,6 +40,7 @@
 
             <TextView
                 android:id="@+id/titlebis"
+                android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Title"
@@ -48,6 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textColor="@color/gray"
                     android:text="Artist"
                     android:textSize="18sp" />
 
@@ -58,6 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Album"
+                    android:textColor="@color/gray"
                     android:textSize="18sp" />
             </LinearLayout>
 
@@ -74,7 +84,9 @@
 
                 <SeekBar
                     android:id="@+id/seekBar"
-                    style="?android:attr/progressBarStyleHorizontal"
+                    style="@style/AppThemeTwo"
+                    android:progressBackgroundTint="#000000"
+                    android:backgroundTint="#000000"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -96,29 +108,31 @@
                 android:layout_below="@id/layoutcentral"
                 android:orientation="horizontal">
 
-                <Button
+                <ImageButton
                     android:id="@+id/aleatoireButton"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Aleatoire" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/playbis"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Play" />
+                    android:text="Play"
+                    android:contentDescription="buttonPlay" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/nextButton"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Next" />
+                    android:text="Next"
+                    android:contentDescription="buttonNext" />
             </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
 
-</FrameLayout>
+</android.support.constraint.ConstraintLayout>

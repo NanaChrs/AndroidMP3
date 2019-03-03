@@ -6,6 +6,8 @@ public class Constants {
         public static final String EXTRA_ARTIST = "extraArtist";
         public static final String EXTRA_ALBUM = "extraAlbum";
         public static final String EXTRA_PATH = "extraPath";
+        public static final String EXTRA_ALEATOIRE = "extraAleatoire";
+        public static final String EXTRA_PLAY = "extraPlay";
 
     }
 }

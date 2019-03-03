@@ -12,5 +12,8 @@ import java.util.List;
 public interface GlobalMediaPlayer{
     MediaPlayer mediaPlayer= new MediaPlayer();
     List<AudioFile> audioFiles = new ArrayList<>();
+    String play ="Play";
+    String aleatoire ="Non Aleatoire";
+
     //int getTrackId(String nom);
 }

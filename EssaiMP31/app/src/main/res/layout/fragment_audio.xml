@@ -65,6 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
@@ -79,8 +80,8 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="23dp"
-                    android:layout_marginRight="23dp"
                     android:layout_marginTop="20dp"
+                    android:layout_marginRight="23dp"
                     android:indeterminate="false"
                     android:max="100"
                     android:minWidth="200dp"
@@ -96,22 +97,22 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/aleatoireButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Aleatoire" />
+
+                <Button
                     android:id="@+id/playbis"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Play" />
 
                 <Button
-                    android:id="@+id/pauseButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Pause" />
-
-                <Button
-                    android:id="@+id/stopButton"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/nextButton"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Next" />

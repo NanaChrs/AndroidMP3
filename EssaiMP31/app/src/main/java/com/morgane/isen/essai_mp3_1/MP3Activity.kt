@@ -15,20 +15,32 @@ import com.morgane.isen.essai_mp3_1.fragments.AudiosFragment
 
 import com.morgane.isen.essai_mp3_1.interfaces.AudioFileListener
 import com.morgane.isen.essai_mp3_1.pojo.AudioFile
+import kotlinx.android.synthetic.main.fragment_audio.*
+import android.widget.Toast
 
-class MP3Activity : AppCompatActivity(), AudioFileListener {
 
+
+class MP3Activity : AppCompatActivity(), AudioFileListener{
 
     override fun onViewAudio(audioFile: AudioFile?) {
         val fragment = AudioFragment()
         val bundle = Bundle()
+        val datas = getPlayAndAlea()
+        Log.e("datas",datas.toString())
         bundle.putString(Constants.Audio.EXTRA_NAME, audioFile?.name)
         bundle.putString(Constants.Audio.EXTRA_ARTIST, audioFile?.artist)
         bundle.putString(Constants.Audio.EXTRA_ALBUM, audioFile?.album)
         bundle.putString(Constants.Audio.EXTRA_PATH, audioFile?.path)
+        if (datas.get(0)==null) {
+            bundle.putString(Constants.Audio.EXTRA_ALEATOIRE, "Non Aleatoire")
+            bundle.putString(Constants.Audio.EXTRA_PLAY, "Play")
+        } else {
+            bundle.putString(Constants.Audio.EXTRA_ALEATOIRE, datas.get(1))
+            bundle.putString(Constants.Audio.EXTRA_PLAY, datas.get(0))
+        }
         fragment.arguments = bundle
 
-        Log.d("fragmentonview", fragment.arguments.toString())
+        Log.d("onViewAudio", fragment.arguments.toString())
 
         findViewById<View>(R.id.audiosListView).visibility = View.INVISIBLE
 
@@ -74,6 +86,18 @@ class MP3Activity : AppCompatActivity(), AudioFileListener {
         tx.addToBackStack("TAG")
         tx.commit()
 
-
     }
+
+    fun getPlayAndAlea(): ArrayList<String>{
+        val playAndAlea = ArrayList<String>()
+        val datas = intent.extras
+        if (datas != null) {
+            val play = datas.getString(Constants.Audio.EXTRA_PLAY)
+            val alea = datas.getString(Constants.Audio.EXTRA_ALEATOIRE)
+            playAndAlea.add(play)
+            playAndAlea.add(alea)
+        }
+        return playAndAlea
+    }
+
 }

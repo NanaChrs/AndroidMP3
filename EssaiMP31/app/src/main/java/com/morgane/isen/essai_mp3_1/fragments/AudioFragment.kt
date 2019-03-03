@@ -1,17 +1,15 @@
 package com.morgane.isen.essai_mp3_1.fragments
 
+import android.content.Context
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.provider.MediaStore
-import android.provider.SyncStateContract
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
+import android.widget.Button
 import android.widget.SeekBar
 import android.widget.TextView
 import com.morgane.isen.essai_mp3_1.*
@@ -19,15 +17,12 @@ import com.morgane.isen.essai_mp3_1.*
 import com.morgane.isen.essai_mp3_1.listener.SeekBarChangeListener
 import com.morgane.isen.essai_mp3_1.pojo.AudioFile
 import kotlinx.android.synthetic.main.fragment_audio.*
-import kotlinx.android.synthetic.main.fragment_audios.*
-import java.util.*
-import android.support.v4.os.HandlerCompat.postDelayed
 import com.morgane.isen.essai_mp3_1.GlobalMediaPlayer.*
-import java.lang.reflect.Array.getLength
-import android.content.res.AssetFileDescriptor
-import com.morgane.isen.essai_mp3_1.MainActivity
-import android.support.v4.content.ContextCompat
 import com.morgane.isen.essai_mp3_1.thread.ThreadSeekBar
+import java.lang.Math.random
+import kotlin.random.Random
+import android.content.Intent
+
 
 
 class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListener{
@@ -38,8 +33,18 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
     }
 
     private var thread : ThreadSeekBar? = null
+    private var aleatoire = "Non Aleatoire"
     private var isPaused = false
+    private var buttonPlay = "Play"
     var seekBarAudio = SeekBar(MP3Application.getContext())
+
+    fun getAleatoire() : String{
+        return this.aleatoire
+    }
+
+    fun getPlay() : String{
+        return this.buttonPlay
+    }
 
     companion object {
         lateinit var instance : AudioFragment
@@ -56,8 +61,19 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
         (view.findViewById<View>(R.id.artistbis) as TextView).text = artist
         val album = arguments!!.getString(Constants.Audio.EXTRA_ALBUM)
         (view.findViewById<View>(R.id.albumbis) as TextView).text = album
+        aleatoire = arguments!!.getString(Constants.Audio.EXTRA_ALEATOIRE)
+        (view.findViewById<View>(R.id.aleatoireButton) as Button).setText(aleatoire)
+        buttonPlay= arguments!!.getString(Constants.Audio.EXTRA_PLAY)
+        (view.findViewById<View>(R.id.playbis) as Button).setText(buttonPlay)
         seekBarAudio= view.findViewById(R.id.seekBar) as SeekBar
         progressMusic()
+        mediaPlayer.reset()
+        val PATH_TO_FILE = arguments!!.getString(Constants.Audio.EXTRA_PATH)
+        mediaPlayer.setDataSource(PATH_TO_FILE)
+        mediaPlayer.prepare()
+        if (buttonPlay=="Pause") {
+            mediaPlayer.start()
+        }
         return view
     }
 
@@ -69,60 +85,88 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
             thread = ThreadSeekBar(seekBarAudio,isPaused)
         }
 
+        playbis.setText(buttonPlay)
+        aleatoireButton.setText(aleatoire)
+
         val PATH_TO_FILE = arguments!!.getString(Constants.Audio.EXTRA_PATH)
 
 
         playbis.setOnTouchListener {  _, motionEvent ->
             when (motionEvent?.action) {
                 MotionEvent.ACTION_UP -> {
-                    println("bouton appuyé")
-                    if (!isPaused || newSong){
-                        mediaPlayer.stop()
-                        mediaPlayer.reset()
-                        mediaPlayer.setDataSource(PATH_TO_FILE)
-                        mediaPlayer.prepare()
-                        isPaused = false
+                    if (buttonPlay=="Play") {
+                        buttonPlay="Pause"
+                        playbis.setText(buttonPlay)
+                        if (!isPaused || newSong) {
+                            mediaPlayer.stop()
+                            mediaPlayer.reset()
+                            mediaPlayer.setDataSource(PATH_TO_FILE)
+                            mediaPlayer.prepare()
+                            isPaused = false
+                        }
+                        if (thread == null) {
+                            thread = ThreadSeekBar(seekBarAudio, isPaused)
+                        }
+                        newSong = false
+                        mediaPlayer.start()
+                    } else {
+                        buttonPlay="Play"
+                        playbis.setText(buttonPlay)
+                        println("bouton appuyé")
+                        mediaPlayer.pause()
+                        isPaused = true
+                        newSong = false
+                        //mediaPlayer?.seekTo(0)
+                        thread=null
                     }
-                    if( thread== null){
-                        thread = ThreadSeekBar(seekBarAudio,isPaused)
-                    }
-                    newSong = false
-                    mediaPlayer.start()
-
+                    passPlayAndAlea()
                 }
             }
             true
         }
 
-        pauseButton.setOnTouchListener {  _, motionEvent ->
+        aleatoireButton.setOnTouchListener { _, motionEvent ->
             when (motionEvent?.action) {
                 MotionEvent.ACTION_UP -> {
-                    println("bouton appuyé")
-                    mediaPlayer.pause()
-                    isPaused = true
-                    newSong = false
-                    //mediaPlayer?.seekTo(0)
-                    thread=null
+                    Log.e("Alea avant",aleatoire)
+                    if (aleatoire=="Non Aleatoire"){
+                        aleatoire="Aleatoire"
+                    } else {
+                        aleatoire="Non Aleatoire"
+                    }
+                    Log.e("Alea apres",aleatoire)
+                    aleatoireButton.setText(aleatoire)
+                    passPlayAndAlea()
                 }
             }
             true
         }
 
-        stopButton.setOnTouchListener {  _, motionEvent ->
+        nextButton.setOnTouchListener { _, motionEvent ->
             when (motionEvent?.action) {
                 MotionEvent.ACTION_UP -> {
+                    var index=0
+                    buttonPlay="Pause"
+                    playbis.setText("Pause")
+                    passPlayAndAlea()
                     println("bouton appuyé")
                     mediaPlayer.stop()
                     mediaPlayer.reset()
                     val audio = getTrackById(PATH_TO_FILE)
                     Log.d("audiotest",audio.toString())
+                    Log.e("alea",aleatoire)
+                    if (aleatoire!="Non Aleatoire"){
+                        index = Random.nextInt(0, audioFiles.size)
+                    } else {
+                        index=audio!!.i+1
+                    }
                     if (audio!=null){
                         //Log.d("audiio", audio.i.toString())
-                        mediaPlayer.setDataSource(audioFiles[audio.i+1].path)
+                        mediaPlayer.setDataSource(audioFiles[index].path)
                         mediaPlayer.prepare()
                         //Log.d("audioFilepat",audioFiles[audio.i+1].path )
                         mediaPlayer.start()
-                        refresh(audioFiles[(audio.i)+1])
+                        refresh(audioFiles[index], aleatoire,buttonPlay)
                     }
                     thread= null
                     newSong = false
@@ -131,7 +175,6 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
             }
             true
         }
-
 
     }
 
@@ -153,13 +196,15 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
         return null
     }
 
-    fun refresh(audioFile: AudioFile?) {
+    fun refresh(audioFile: AudioFile?,aleatoire : String, play : String) {
         val fragment = AudioFragment()
         val bundle = Bundle()
         bundle.putString(Constants.Audio.EXTRA_NAME, audioFile?.name)
         bundle.putString(Constants.Audio.EXTRA_ARTIST, audioFile?.artist)
         bundle.putString(Constants.Audio.EXTRA_ALBUM, audioFile?.album)
         bundle.putString(Constants.Audio.EXTRA_PATH, audioFile?.path)
+        bundle.putString(Constants.Audio.EXTRA_ALEATOIRE,aleatoire)
+        bundle.putString(Constants.Audio.EXTRA_PLAY, play)
         fragment.arguments = bundle
 
         Log.d("fragmentonview", fragment.arguments.toString())
@@ -186,6 +231,13 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
         seekBarAudio.setProgress(mediaPlayer.getCurrentPosition())
     }
 
+    fun passPlayAndAlea(){
+        val datas = Bundle()
+        datas.putString(Constants.Audio.EXTRA_PLAY, buttonPlay)
+        datas.putString(Constants.Audio.EXTRA_ALEATOIRE, aleatoire)
 
+        val intent = activity!!.intent
+        intent.putExtras(datas)
 
+    }
 }

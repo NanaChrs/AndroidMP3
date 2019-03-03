@@ -11,22 +11,35 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.SeekBar
 import android.widget.TextView
 import com.morgane.isen.essai_mp3_1.*
 
-import com.morgane.isen.essai_mp3_1.GlobalMediaPlayer.audioFiles
-import com.morgane.isen.essai_mp3_1.GlobalMediaPlayer.mediaPlayer
+import com.morgane.isen.essai_mp3_1.listener.SeekBarChangeListener
 import com.morgane.isen.essai_mp3_1.pojo.AudioFile
 import kotlinx.android.synthetic.main.fragment_audio.*
 import kotlinx.android.synthetic.main.fragment_audios.*
 import java.util.*
+import android.support.v4.os.HandlerCompat.postDelayed
+import com.morgane.isen.essai_mp3_1.GlobalMediaPlayer.*
+import java.lang.reflect.Array.getLength
+import android.content.res.AssetFileDescriptor
+import com.morgane.isen.essai_mp3_1.MainActivity
+import android.support.v4.content.ContextCompat
+import com.morgane.isen.essai_mp3_1.thread.ThreadSeekBar
 
 
+class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListener{
 
+    override fun onPrepared(mp: MediaPlayer?) {
+        seekBarAudio.max=mediaPlayer.duration
+        seekBarAudio.postDelayed(thread,1000)
+    }
 
-class AudioFragment : Fragment(), GlobalMediaPlayer{
-
-    private var isPaused = false;
+    private var thread : ThreadSeekBar? = null
+    private var isPaused = false
+    var seekBarAudio = SeekBar(MP3Application.getContext())
 
     companion object {
         lateinit var instance : AudioFragment
@@ -43,6 +56,8 @@ class AudioFragment : Fragment(), GlobalMediaPlayer{
         (view.findViewById<View>(R.id.artistbis) as TextView).text = artist
         val album = arguments!!.getString(Constants.Audio.EXTRA_ALBUM)
         (view.findViewById<View>(R.id.albumbis) as TextView).text = album
+        seekBarAudio= view.findViewById(R.id.seekBar) as SeekBar
+        progressMusic()
         return view
     }
 
@@ -50,8 +65,11 @@ class AudioFragment : Fragment(), GlobalMediaPlayer{
         super.onActivityCreated(savedInstanceState)
         var newSong = true
 
-        val PATH_TO_FILE = arguments!!.getString(Constants.Audio.EXTRA_PATH)
+        if( thread== null){
+            thread = ThreadSeekBar(seekBarAudio,isPaused)
+        }
 
+        val PATH_TO_FILE = arguments!!.getString(Constants.Audio.EXTRA_PATH)
 
 
         playbis.setOnTouchListener {  _, motionEvent ->
@@ -65,8 +83,12 @@ class AudioFragment : Fragment(), GlobalMediaPlayer{
                         mediaPlayer.prepare()
                         isPaused = false
                     }
+                    if( thread== null){
+                        thread = ThreadSeekBar(seekBarAudio,isPaused)
+                    }
                     newSong = false
                     mediaPlayer.start()
+
                 }
             }
             true
@@ -80,6 +102,7 @@ class AudioFragment : Fragment(), GlobalMediaPlayer{
                     isPaused = true
                     newSong = false
                     //mediaPlayer?.seekTo(0)
+                    thread=null
                 }
             }
             true
@@ -101,10 +124,9 @@ class AudioFragment : Fragment(), GlobalMediaPlayer{
                         mediaPlayer.start()
                         refresh(audioFiles[(audio.i)+1])
                     }
+                    thread= null
                     newSong = false
                     //mediaPlayer.seekTo(0)
-
-
                 }
             }
             true
@@ -148,10 +170,22 @@ class AudioFragment : Fragment(), GlobalMediaPlayer{
         //tx.addToBackStack(null)
         tx.commit()
 
+        progressMusic()
+
         //getSupportFragmentManager().inTransaction {
         //    add(R.id.container2, fragment)
         //}
 
     }
+
+    fun progressMusic(){
+        mediaPlayer.setOnPreparedListener(this)
+        seekBarAudio.setOnSeekBarChangeListener(SeekBarChangeListener());
+        seekBarAudio.max=mediaPlayer.duration
+        seekBarAudio.postDelayed(thread,1000)
+        seekBarAudio.setProgress(mediaPlayer.getCurrentPosition())
+    }
+
+
 
 }

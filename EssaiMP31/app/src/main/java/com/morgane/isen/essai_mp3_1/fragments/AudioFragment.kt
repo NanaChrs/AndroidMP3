@@ -23,6 +23,10 @@ import java.lang.Math.random
 import kotlin.random.Random
 import android.content.Intent
 import android.widget.ImageButton
+import android.R.attr.start
+import android.media.MediaPlayer.OnCompletionListener
+
+
 
 
 class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListener{
@@ -99,12 +103,11 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
         //playbis.setText(buttonPlay)
         //aleatoireButton.setText(aleatoire)
         changeButton()
-        val PATH_TO_FILE = arguments!!.getString(Constants.Audio.EXTRA_PATH)
-
 
         playbis.setOnTouchListener {  _, motionEvent ->
             when (motionEvent?.action) {
                 MotionEvent.ACTION_UP -> {
+                    val PATH_TO_FILE = arguments!!.getString(Constants.Audio.EXTRA_PATH)
                     if (buttonPlay=="Play") {
                         buttonPlay="Pause"
                         changeButton()
@@ -156,36 +159,41 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
         nextButton.setOnTouchListener { _, motionEvent ->
             when (motionEvent?.action) {
                 MotionEvent.ACTION_UP -> {
-                    var index=0
-                    buttonPlay="Pause"
-                    passPlayAndAlea()
-                    println("bouton appuyé")
-                    mediaPlayer.stop()
-                    mediaPlayer.reset()
-                    val audio = getTrackById(PATH_TO_FILE)
-                    Log.d("audiotest",audio.toString())
-                    Log.e("alea",aleatoire)
-                    if (aleatoire!="Non Aleatoire"){
-                        index = Random.nextInt(0, audioFiles.size)
-                    } else {
-                        index=audio!!.i+1
-                    }
-                    if (audio!=null){
-                        //Log.d("audiio", audio.i.toString())
-                        mediaPlayer.setDataSource(audioFiles[index].path)
-                        mediaPlayer.prepare()
-                        //Log.d("audioFilepat",audioFiles[audio.i+1].path )
-                        mediaPlayer.start()
-                        refresh(audioFiles[index], aleatoire,buttonPlay)
-                    }
-                    thread= null
-                    newSong = false
-                    //mediaPlayer.seekTo(0)
+                    toDoOnNext()
+                    newSong=false
                 }
             }
             true
         }
 
+    }
+
+    private fun toDoOnNext() {
+        val PATH_TO_FILE = arguments!!.getString(Constants.Audio.EXTRA_PATH)
+        var index=0
+        buttonPlay="Pause"
+        passPlayAndAlea()
+        println("bouton appuyé")
+        mediaPlayer.stop()
+        mediaPlayer.reset()
+        val audio = getTrackById(PATH_TO_FILE)
+        Log.d("audiotest",audio.toString())
+        Log.e("alea",aleatoire)
+        if (aleatoire!="Non Aleatoire"){
+            index = Random.nextInt(0, audioFiles.size)
+        } else {
+            index=audio!!.i+1
+        }
+        if (audio!=null){
+            //Log.d("audiio", audio.i.toString())
+            mediaPlayer.setDataSource(audioFiles[index].path)
+            mediaPlayer.prepare()
+            //Log.d("audioFilepat",audioFiles[audio.i+1].path )
+            mediaPlayer.start()
+            refresh(audioFiles[index], aleatoire,buttonPlay)
+        }
+        thread= null
+        //mediaPlayer.seekTo(0)
     }
 
 
@@ -235,6 +243,7 @@ class AudioFragment : Fragment(), GlobalMediaPlayer, MediaPlayer.OnPreparedListe
 
     fun progressMusic(){
         mediaPlayer.setOnPreparedListener(this)
+        mediaPlayer.setOnCompletionListener(OnCompletionListener { toDoOnNext()})
         seekBarAudio.setOnSeekBarChangeListener(SeekBarChangeListener());
         seekBarAudio.max=mediaPlayer.duration
         seekBarAudio.postDelayed(thread,1000)

@@ -40,7 +40,7 @@ class MP3Activity : AppCompatActivity(), AudioFileListener{
         }
         fragment.arguments = bundle
 
-        Log.d("onViewAudio", fragment.arguments.toString())
+        //Log.d("onViewAudio", fragment.arguments.toString())
 
         findViewById<View>(R.id.audiosListView).visibility = View.INVISIBLE
 

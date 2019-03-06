@@ -1,0 +1,16 @@
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:textColor="@color/white"
+    tools:context=".MainActivity">
+
+    <ListView
+        android:id="@+id/audiosListView"
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="8.0dp"/>
+
+</android.support.constraint.ConstraintLayout>

@@ -21,7 +21,7 @@ class AudioFile : Comparable<AudioFile> {
     @ColumnInfo
     var name: String = ""
 
-    @Embedded
+    @ColumnInfo
     var artist: String = ""
 
     @ColumnInfo

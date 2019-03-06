@@ -14,12 +14,7 @@ public interface Dao {
     @Query("SELECT * FROM AudioFile")
     List<AudioFile> getAll();
 
-    @Insert
-    void insertAll(AudioFile... artists);
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<AudioFile> artists);
 
-    @Delete
-    void delete(AudioFile artist);
 }

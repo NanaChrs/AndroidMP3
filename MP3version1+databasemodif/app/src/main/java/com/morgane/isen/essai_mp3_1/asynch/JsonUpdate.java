@@ -30,6 +30,7 @@ public class JsonUpdate implements GlobalMediaPlayer {
     }
     public String[] searchInfo(String nom, String date, String artiste, String album){
         String[] infos={nom, album, artiste, date, "duree"};
+        String artist = artiste;
         if (nom!=""){
             try {
                 Document doc = Jsoup.connect("https://www.allmusic.com/search/all/"+nom).get();
@@ -38,14 +39,23 @@ public class JsonUpdate implements GlobalMediaPlayer {
                 for (Element link : links) {
                     Elements arti = link.getElementsByClass("performers");
                     for(Element art : arti){
-                        if (art.getElementsByAttributeValue("href", artiste).hasText()){
+                        if(artist==""){
+                            artist=art.text();
+                        }
+                        if (art.getElementsByAttributeValue("href", artist).hasText()){
                             String linkHref = link.attr("href");
                             String linkText = link.text();
                             Document dc = Jsoup.connect(linkText).get();
                             Elements cont = dc.getElementsContainingText("inAlbum");//zone avec toutes les informations disponibles
-                            infos[1]=cont.get(3).child(0).child(0).child(0).text();
-                            infos[2]=cont.get(3).child(1).child(0).text();
-                            infos[3]=cont.get(2).text();
+                            if(album==""){
+                                infos[1]=cont.get(3).child(0).child(0).child(0).text();
+                            }
+                            if(artiste==""){
+                                infos[2]=cont.get(3).child(1).child(0).text();
+                            }
+                            if(date==""){
+                                infos[3]=cont.get(2).text();
+                            }
                             infos[4]=cont.get(5).child(0).text();
                         }
                     }
